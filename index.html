@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css"/>
+   <link rel="shortcut icon" href="/favicon.ico">
+   <title>葫芦侠违禁词替换</title>
+   <style>
+   @font-face {
+       font-family: '爱';
+       src: url('//at.alicdn.com/wf/webfont/F8qy9JfbcZ6Z/yNBAf9G5P3CS.woff') format('woff'); 
+   }
+   body {
+       margin: 0;
+       padding: 0;
+       background: url('https://imageapi.org/api.php?zd=mobile&fl=dongman&gs=images') no-repeat center center fixed;
+       background-size: cover;
+       font-family: '爱', sans-serif;
+   }
+   h1 {
+       text-align: center;
+       color: white;
+       padding-top: 20px;
+   }
+   form {
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       margin-top: 20px;
+   }
+   label {
+       margin-bottom: 10px;
+       font-size: 1.2em;
+       color: white;
+   }
+   input[type="text"] {
+       padding: 10px;
+       margin-bottom: 10px;
+       width: 80%;
+       max-width: 400px;
+   }
+   input[type="submit"] {
+       padding: 10px 20px;
+       background-color: #4CAF50;
+       color: white;
+       border: none;
+       cursor: pointer;
+   }
+   input[type="submit"]:hover {
+       background-color: #45a049;
+   }
+   #output {
+       margin-top: 10px;
+       padding: 10px;
+       width: 80%;
+       max-width: 400px;
+       height: 200px;
+       overflow-y: scroll;
+       background-color: rgba(255, 255, 255, 0.8);
+       color: black;
+   }
+   @media screen and (max-width: 480px) {
+       input[type="text"], #output {
+           width: 100%;
+       }
+   }
+   @media screen and (min-width: 481px) {
+       input[type="text"], #output {
+           width: 50%;
+       }
+   }
+   </style>
+</head>
+<body>
+   <h1>葫芦侠违禁词替换</h1>
+   <h2>原理:将已知的违禁词中插入/u2000，以此来对抗葫芦侠违禁词检测</h2>
+   <form method="post">
+     <label for="text">请输入文本：</label>
+     <input type="text" name="text" id="text" placeholder="在此输入文本...">
+     <input type="submit" value="检测和替换">
+   </form>
+   <div id="output"></div>
+   <script>
+   // 指定需要检测和替换的特定字符
+   const forbiddenWords = ['破解', '鬼灭之刃', 'pure', '中共', '橙光', '刷分', '大波', '在职', 'thunder', 'e', '插进去', 'taptap', '电报'];
+   const replaceWords = ['破 解', '鬼滅之刃', 'purе', '中 共', '橙 光', '刷 分', '大 波', '在 职', 'thundеr', 'е', '插 进 去', 'tₐpᵗap', '电 报'];
+
+   document.querySelector('form').addEventListener('submit', function(e) {
+       e.preventDefault();
+       const text = document.getElementById('text').value;
+       let containsForbidden = false;
+       let outputText = text;
+
+       forbiddenWords.forEach((word, index) => {
+           if (text.includes(word)) {
+               containsForbidden = true;
+               outputText = outputText.replace(new RegExp(word, 'g'), replaceWords[index]);
+           }
+       });
+
+       document.getElementById('output').textContent = outputText;
+       if (containsForbidden) {
+           document.getElementById('output').style.backgroundColor = '#FFCCCC';
+       } else {
+           document.getElementById('output').style.backgroundColor = '#CCFFCC';
+           alert('此段文本没有违禁词');
+       }
+   });
+
+   function copyToClipboard() {
+       const outputText = document.getElementById('output').textContent;
+       const textArea = document.createElement('textarea');
+       textArea.value = outputText;
+       document.body.appendChild(textArea);
+       textArea.select();
+       document.execCommand('copy');
+       textArea.remove();
+       alert('已复制到粘贴板');
+   }
+   </script>
+   <script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+</body>
+</html>
